@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -eu
 
-cd "$(dirname "$0")" || exit
-
-: "${S3_BUCKET:=numtide-nix-parallel-test-case}"
-cache_url=https://s3.amazonaws.com/${S3_BUCKET}/
-
 log() {
   echo "***************************************************"
   echo "   $*"
@@ -16,6 +11,10 @@ bench() {
   echo "$*"
   time "$@"
 }
+
+source "$(dirname "$0")/../config.env"
+
+cache_url=https://s3.amazonaws.com/${S3_BUCKET}/
 
 rm -f ./result
 

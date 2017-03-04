@@ -3,10 +3,10 @@
 
 # Config
 count = (ARGV[0] || 1000).to_i
-s3_bucket = ENV['S3_BUCKET'] || 'numtide-nix-parallel-test-case'
+s3_bucket = ENV['S3_BUCKET']
+nix_file = File.expand_path('../fixtures.nix', __dir__)
 
 # Main
-top = File.expand_path('..', __dir__)
 base_url="https://s3.amazonaws.com/#{s3_bucket}/fixtures"
 
 pairs = count.times.map do |i|
@@ -16,7 +16,7 @@ pairs = count.times.map do |i|
   [url, sha256]
 end
 
-File.open("#{top}/fixtures.nix", "w") do |f|
+File.open(nix_file, "w") do |f|
   f.puts "["
   pairs.each do |(url, sha256)|
     f.puts <<EOF

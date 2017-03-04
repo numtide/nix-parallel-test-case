@@ -4,7 +4,7 @@
 
 # Config
 count = (ARGV[0] || 1000).to_i
-s3_bucket = ENV['S3_BUCKET'] || 'numtide-nix-parallel-test-case'
+s3_bucket = ENV['S3_BUCKET']
 
 # Main
 require 'tmpdir'
