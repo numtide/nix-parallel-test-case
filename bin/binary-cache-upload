@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -xeu
-source "$(dirname "$0")/../config.env"
+
+clear_cache() {
+  rm -rf "$cachedir"
+}
 
 cachedir=$(mktemp -d)
+trap clear_cache EXIT
 
 nix-push --dest "$cachedir" --link "./result"
 aws s3 sync "$cachedir" "s3://$S3_BUCKET/binary-cache/" --acl public-read
-rm -rf "$cachedir"
