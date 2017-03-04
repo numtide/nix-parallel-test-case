@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+#
+# Uploads new fixtures to S3
+
+# Config
+count = (ARGV[0] || 1000).to_i
+s3_bucket = ENV['S3_BUCKET'] || 'numtide-nix-parallel-test-case'
+
+# Main
+require 'tmpdir'
+
+Dir.mktmpdir("fixtures") do |dir|
+  count.times.each do |i|
+    num = "%03d" % i
+    File.write("#{dir}/#{num}.txt", num)
+  end
+
+  system("aws", "s3", "cp", dir, "s3://#{s3_bucket}/fixtures", "--acl", "public-read", "--recursive")
+end

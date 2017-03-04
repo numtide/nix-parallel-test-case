@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -eu
+
+cd "$(dirname "$0")" || exit
+
+: "${S3_BUCKET:=numtide-nix-parallel-test-case}"
+cache_url=https://s3.amazonaws.com/${S3_BUCKET}/
+
+log() {
+  echo "***************************************************"
+  echo "   $*"
+  echo "***************************************************"
+}
+
+bench() {
+  echo "$*"
+  time "$@"
+}
+
+rm -f ./result
+
+log Uncached speed
+nix-collect-garbage -d
+bench nix-build --no-out-link
+
+log Remote cache speed
+nix-collect-garbage -d
+bench nix-build --no-out-link --option extra-binary-caches "$cache_url"
+
+log Local cache speed
+bench nix-build --no-out-link
+

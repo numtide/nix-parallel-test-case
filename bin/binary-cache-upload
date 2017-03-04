@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -xeu
+cd "$(dirname "$0")/.." || exit
+cachedir=$PWD/tmp
+
+nix-push --dest "$cachedir" --link "./result"
+aws s3 sync "$cachedir" "s3://$S3_BUCKET/binary-cache/" --acl public-read
+rm -rf "$cachedir"
