@@ -7,23 +7,30 @@ log() {
   echo "***************************************************"
 }
 
-bench() {
-  echo "$*"
-  time "$@"
+build() {
+  cmd=(nix-build -A test --no-out-link "$@")
+  echo "${cmd[*]}"
+  time "${cmd[@]}" 2>/dev/null
+}
+
+gc() {
+  nix-collect-garbage -d 2>/dev/null
 }
 
 cache_url=https://s3.amazonaws.com/${S3_BUCKET}/
 
-rm -f ./result
+# Pin the dependencies
+nix-build -A deps 2>/dev/null
 
 log Uncached speed
-nix-collect-garbage -d
-bench nix-build --no-out-link
+gc
+build
 
 log Remote cache speed
-nix-collect-garbage -d
-bench nix-build --no-out-link --option extra-binary-caches "$cache_url"
+gc
+build --option extra-binary-caches "$cache_url"
 
 log Local cache speed
-bench nix-build --no-out-link
+# skip the GC part
+build
 

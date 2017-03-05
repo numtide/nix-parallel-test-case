@@ -1,30 +1,18 @@
+/nix/store/kyj4x301y6y0gq3374lnl9b8sl7qswyf-deps
 ***************************************************
    Uncached speed
 ***************************************************
-
+204 store paths deleted, 0.83 MiB freed
+nix-build -A test --no-out-link
 /nix/store/9j1l1hzy38l019ycvcag32avsl0gajwz-nix-parallel-test-case
-
-real	2m33.458s
-user	0m0.684s
-sys	0m0.598s
-
 ***************************************************
    Remote cache speed
 ***************************************************
-
+204 store paths deleted, 0.83 MiB freed
+nix-build -A test --no-out-link --option extra-binary-caches https://s3.amazonaws.com/numtide-nix-parallel-test-case/
 /nix/store/9j1l1hzy38l019ycvcag32avsl0gajwz-nix-parallel-test-case
-
-real	3m45.123s
-user	0m0.732s
-sys	0m0.705s
-
 ***************************************************
    Local cache speed
 ***************************************************
-nix-build --no-out-link
+nix-build -A test --no-out-link
 /nix/store/9j1l1hzy38l019ycvcag32avsl0gajwz-nix-parallel-test-case
-
-real	0m0.232s
-user	0m0.155s
-sys	0m0.025s
-
