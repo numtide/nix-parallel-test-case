@@ -3,8 +3,8 @@
 
 # Config
 count = (ARGV[0] || 1000).to_i
+out = ARGV[1] || File.expand_path('../fixtures.json', __dir__)
 s3_bucket = ENV['S3_BUCKET']
-nix_file = File.expand_path('../fixtures.nix', __dir__)
 
 # Main
 base_url="https://s3.amazonaws.com/#{s3_bucket}/fixtures"
@@ -13,18 +13,8 @@ pairs = count.times.map do |i|
   filename = "%03d.txt" % i
   url = "#{base_url}/#{filename}"
   sha256 = `nix-prefetch-url #{url}`.strip
-  [url, sha256]
+  {url: url, sha256: sha256}
 end
 
-File.open(nix_file, "w") do |f|
-  f.puts "["
-  pairs.each do |(url, sha256)|
-    f.puts <<EOF
-  {
-    url = "#{url}";
-    sha256 = "#{sha256}";
-  }
-EOF
-  end
-  f.puts "]"
-end
+require "json"
+File.write(out, JSON.pretty_generate(pairs))

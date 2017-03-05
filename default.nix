@@ -5,8 +5,8 @@ let
   pkgs = import pkgsSrc {};
   inherit (pkgs) lib stdenv fetchurl;
 
-  srcs = lib.take 100 (import ./fixtures.nix);
-  srcPaths = builtins.map (pair: toString (fetchurl pair)) srcs;
+  fixtures = lib.take 100 (lib.importJSON ./fixtures.json);
+  paths = builtins.map (pair: toString (fetchurl pair)) fixtures;
 in
 stdenv.mkDerivation {
   name = "nix-parallel-test-case";
@@ -15,6 +15,6 @@ stdenv.mkDerivation {
   phases = ["installPhase"];
 
   installPhase = ''
-    echo ${toString srcPaths} > $out
+    echo ${toString paths} > $out
   '';
 }
